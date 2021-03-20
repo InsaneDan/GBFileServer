@@ -3,6 +3,8 @@ package ru.isakov.server;
 import io.netty.channel.Channel;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.channel.SimpleChannelInboundHandler;
+
+import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.atomic.AtomicInteger;
@@ -18,10 +20,10 @@ public class MainHandler extends SimpleChannelInboundHandler<String> {
         channels.add(ctx.channel());
         clientName = "Клиент #" + newClientIndex;
         newClientIndex.getAndIncrement();
-        broadcastMessage("SERVER", "Подключился новый клиент: " + clientName);
+        broadcastMessage("SERVER",  "Подключился новый клиент: " + clientName);
     }
 
-    // channelRead0 для работы со строками!
+    // channelRead0 для работы со строками
     @Override
     protected void channelRead0(ChannelHandlerContext channelHandlerContext, String s) throws Exception {
         System.out.println("Получено сообщение: " + s);

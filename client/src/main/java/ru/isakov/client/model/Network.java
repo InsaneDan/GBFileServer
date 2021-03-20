@@ -1,4 +1,4 @@
-package ru.isakov.client;
+package ru.isakov.client.model;
 
 import io.netty.bootstrap.Bootstrap;
 import io.netty.channel.*;
@@ -7,6 +7,7 @@ import io.netty.channel.socket.SocketChannel;
 import io.netty.channel.socket.nio.NioSocketChannel;
 import io.netty.handler.codec.string.StringDecoder;
 import io.netty.handler.codec.string.StringEncoder;
+import ru.isakov.client.Callback;
 
 public class Network {
     private SocketChannel channel;
@@ -19,7 +20,7 @@ public class Network {
             // пул потоков для обработки сетевых событий
             NioEventLoopGroup workerGroup = new NioEventLoopGroup();
             try {
-                // создаем Bootstrap (обычный, не ServerBootstrap)
+                // создаем клиентский Bootstrap
                 Bootstrap b = new Bootstrap();
                 // группа - канал - конвейер для сокетканала
                 b.group(workerGroup)
@@ -28,7 +29,7 @@ public class Network {
                             @Override
                             protected void initChannel(SocketChannel socketChannel) throws Exception {
                                 channel = socketChannel; // запоминаем ссылку на соединение
-                                // преобразуем String в ByteBuffer, иначе при пересылке (в методе sendMessage) и получении будем получать ошибку
+                                // преобразуем String в ByteBuffer, иначе при пересылке (в методе sendMessage) и получении будет ошибка
                                 socketChannel.pipeline().addLast(new StringDecoder(), new StringEncoder(), new ClientHandler(onMessageReceivedCallback));
                             }
                         });
@@ -40,7 +41,7 @@ public class Network {
                 workerGroup.shutdownGracefully();
             }
         });
-        t.setDaemon(true); // будет автозавершаться при закрытии формы
+        t.setDaemon(true); // для автозавершения треда при закрытии формы (точнее - основного потока)
         t.start();
     }
 

@@ -1,4 +1,4 @@
-package ru.isakov.client;
+package ru.isakov.client.controller;
 
 import javafx.application.Platform;
 import javafx.event.ActionEvent;
@@ -6,10 +6,12 @@ import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.control.TextArea;
 import javafx.scene.control.TextField;
+import ru.isakov.client.model.Network;
+
 import java.net.URL;
 import java.util.ResourceBundle;
 
-public class Controller implements Initializable {
+public class ClientController implements Initializable {
     private Network network;
 
     @FXML

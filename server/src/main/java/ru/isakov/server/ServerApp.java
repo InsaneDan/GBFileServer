@@ -33,6 +33,7 @@ public class ServerApp {
                             socketChannel.pipeline().addLast(new StringDecoder(), new StringEncoder(), new MainHandler()); // конвертируем String в ByteBuffer при отправке и получении
                         }
                     });
+            System.out.println("Сервер запущен");
             // сервер должен стартовать .sync() на указанном порту .bind(PORT)
             // ChannelFuture - исполняемая задача
             ChannelFuture future = b.bind(PORT).sync();
