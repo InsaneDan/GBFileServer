@@ -8,15 +8,20 @@ import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.atomic.AtomicInteger;
+import java.util.logging.Logger;
 
 public class MainHandler extends SimpleChannelInboundHandler<String> {
-    private static final List<Channel> channels = new ArrayList<>(); // список всех подключенных клиентов
+
+    Logger logger = Logger.getLogger(ServerApp.class.getName());
+
+
+    private static final List<Channel> channels = new ArrayList<>(); // список подключенных клиентов
     private static AtomicInteger newClientIndex = new AtomicInteger(1);
     private String clientName;
 
     @Override
     public void channelActive(ChannelHandlerContext ctx) throws Exception {
-        System.out.println("Клиент подключился: " + ctx);
+        logger.info("Запрос на подключение: " + ctx);
         channels.add(ctx.channel());
         clientName = "Клиент #" + newClientIndex;
         newClientIndex.getAndIncrement();

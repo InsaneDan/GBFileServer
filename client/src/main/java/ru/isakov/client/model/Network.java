@@ -9,11 +9,26 @@ import io.netty.handler.codec.string.StringDecoder;
 import io.netty.handler.codec.string.StringEncoder;
 import ru.isakov.client.Callback;
 
+import java.io.ObjectInputStream;
+import java.io.ObjectOutputStream;
+import java.net.Socket;
+
 public class Network {
-    private SocketChannel channel;
 
     private static final String HOST = "localhost";
     private static final int PORT = 8189;
+
+    private SocketChannel channel;
+
+    private String host;
+    private int port;
+    private ObjectInputStream inputStream;
+    private ObjectOutputStream outputStream;
+    private Socket socket;
+//    private ClientChat clientChat;
+    private String nickname;
+    private String login;
+
 
     public Network(Callback onMessageReceivedCallback) {
         Thread t = new Thread(() -> { // запускаем в отдельном потоке, т.к. future.channel().closeFuture().sync() блокирующая операция, будет заблокирован запуск интерфейса
