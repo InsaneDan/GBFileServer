@@ -22,7 +22,7 @@ import java.util.ResourceBundle;
 
 public class ClientController implements Initializable {
 
-    private static final Logger logger = LoggerFactory.getLogger(ClientController.class.getName());
+    private static final Logger logger = LoggerFactory.getLogger(ClientController.class);
 
     private Network network;
 

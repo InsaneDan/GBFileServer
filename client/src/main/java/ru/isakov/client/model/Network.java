@@ -9,6 +9,10 @@ import io.netty.handler.codec.string.StringDecoder;
 import io.netty.handler.codec.string.StringEncoder;
 import javafx.scene.control.Alert;
 import javafx.stage.Stage;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import ru.isakov.client.ClientApp;
+import ru.isakov.client.controller.ClientController;
 
 
 import java.io.IOException;
@@ -18,8 +22,10 @@ import java.io.ObjectOutputStream;
 
 public class Network {
 
+    private static final Logger logger = LoggerFactory.getLogger(Network.class);
+
     private static final String HOST = "localhost";
-    private static final int PORT = 8189;
+    private static final int PORT = 8118;
 
     private SocketChannel channel; // сокет-канал
     NioEventLoopGroup workerGroup; // пул потоков для обработки сетевых событий
@@ -30,6 +36,10 @@ public class Network {
     private ObjectInputStream inputStream;
     private ObjectOutputStream outputStream;
 
+    private ClientApp clientApp;
+
+
+    // конструктор по умолчанию
     public Network() {
         this(HOST, PORT);
     }
@@ -37,6 +47,11 @@ public class Network {
     public Network(String host, int port) {
         this.host = host;
         this.port = port;
+    }
+
+    public Network(ClientApp clientApp) {
+        this();
+        this.clientApp = clientApp;
     }
 
     public Network(Callback onMessageReceivedCallback) {
@@ -60,6 +75,7 @@ public class Network {
                 ChannelFuture future = b.connect(HOST, PORT).sync();
                 future.channel().closeFuture().sync(); // ждем команду на остановку
             } catch (Exception e) {
+                logger.error("Не удалось установить соединение с сервером!");
                 e.printStackTrace();
             } finally {
                 workerGroup.shutdownGracefully();

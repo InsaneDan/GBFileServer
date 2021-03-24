@@ -15,6 +15,6 @@ public enum CommandType {
     SET_NICKNAME_OK,
     INFO_MESSAGE,
     CLIENT_MESSAGE,
-    END,
     UPDATE_USERS_LIST,
+    EXIT,
 }

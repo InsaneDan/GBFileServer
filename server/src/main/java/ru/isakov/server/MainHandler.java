@@ -1,8 +1,10 @@
 package ru.isakov.server;
 
+import io.netty.buffer.ByteBuf;
 import io.netty.channel.Channel;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.channel.SimpleChannelInboundHandler;
+import ru.isakov.Command;
 
 import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
@@ -31,30 +33,25 @@ public class MainHandler extends SimpleChannelInboundHandler<String> {
     // channelRead0 для работы со строками
     @Override
     protected void channelRead0(ChannelHandlerContext channelHandlerContext, String s) throws Exception {
-        System.out.println("Получено сообщение: " + s);
-        if (s.startsWith("/")) {
-            if (s.startsWith("/changename ")) { // /changename myname1
-                String newNickname = s.split("\\s", 2)[1];
-                broadcastMessage("SERVER", "Клиент " + clientName + " сменил ник на " + newNickname);
-                clientName = newNickname;
-            }
-            return;
-        }
-        broadcastMessage(clientName, s);
+//        System.out.println("Получено сообщение: " + s);
+//        if (s.startsWith("/")) {
+//            if (s.startsWith("/changename ")) { // /changename myname1
+//                String newNickname = s.split("\\s", 2)[1];
+//                broadcastMessage("SERVER", "Клиент " + clientName + " сменил ник на " + newNickname);
+//                clientName = newNickname;
+//            }
+//            return;
+//        }
+//        broadcastMessage(clientName, s);
     }
 
-/*
     // для работы с объектами (в виде байтов)
     @Override
     public void channelRead(ChannelHandlerContext ctx, Object msg) throws Exception {
         ByteBuf buf = (ByteBuf) msg;
-        while (buf.readableBytes() > 0) {
-            System.out.print((char) buf.readByte());
-        }
-        System.out.println("");
+        Command command = (Command) msg;
         buf.release();
     }
-*/
 
     // сообщения от сервера
     public void broadcastMessage(String clientName, String message) {

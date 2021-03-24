@@ -90,12 +90,13 @@ public class Command implements Serializable {
         command.type = CommandType.UPDATE_USERS_LIST;
         command.data = new UpdateUsersListCommandData(users);
         return command;
-    }
-
-    public static Command endCommand() {
-        Command command = new Command();
-        command.type = CommandType.END;
-        return command;
     }*/
+
+    public static Command exitCommand() {
+        Command command = new Command();
+        command.type = CommandType.EXIT;
+        command.data = null;
+        return command;
+    }
 
 }
