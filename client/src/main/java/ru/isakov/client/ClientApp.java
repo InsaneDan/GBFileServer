@@ -5,12 +5,18 @@ import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.stage.Stage;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import ru.isakov.client.controller.AuthController;
 import ru.isakov.client.controller.ClientController;
 import ru.isakov.client.model.ClientState;
 import ru.isakov.client.model.Network;
 
+// to start in debug mode: mvn clean javafx:run@debug
+
 public class ClientApp extends Application {
+
+    private static final Logger logger = LoggerFactory.getLogger(ClientApp.class);
 
     private ClientState clientState = ClientState.AUTHENTICATION;
     private Stage primaryStage;
@@ -24,49 +30,18 @@ public class ClientApp extends Application {
 
         this.primaryStage = primaryStage;
 
-        FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("/AuthForm.fxml"));
-//        FXMLLoader fxmlLoader = new FXMLLoader();
-//        fxmlLoader.setLocation(getClass().getResource("/AuthForm.fxml"));
+        FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("/MainForm.fxml"));
         Parent root = fxmlLoader.load();
-        authController = fxmlLoader.getController();
-        primaryStage.setOnCloseRequest(event -> authController.exitAction());
-        primaryStage.setTitle("Authorization");
-        Scene scene = new Scene(root, 320, 200);
+
+        clientController = fxmlLoader.getController();
+
+        primaryStage.setOnCloseRequest(event -> clientController.exitAction());
+        primaryStage.setTitle("File Cloud Server");
+        Scene scene = new Scene(root, 900, 500);
         scene.getStylesheets().add("/style.css");
-        primaryStage.setResizable(false);
+//        primaryStage.setResizable(false);
         primaryStage.setScene(scene);
         primaryStage.show();
-
-//        network = new Network(this);
-//        if (!network.connect()) {
-//            showNetworkError("", "Failed to connect to server", primaryStage);
-//        }
-//
-//        viewController.setNetwork(network);
-//        viewController.setStage(primaryStage);
-//
-//        network.waitMessages(viewController);
-//
-//        primaryStage.setOnCloseRequest(event -> {
-//            network.close();
-//        });
-//
-//        openAuthDialog();
-//
-//
-
-
-
-
-
-
-
-
-
-
-
-
-
     }
 
     public static void main(String[] args) {

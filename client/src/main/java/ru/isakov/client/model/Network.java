@@ -7,40 +7,49 @@ import io.netty.channel.socket.SocketChannel;
 import io.netty.channel.socket.nio.NioSocketChannel;
 import io.netty.handler.codec.string.StringDecoder;
 import io.netty.handler.codec.string.StringEncoder;
-import ru.isakov.client.Callback;
+import javafx.scene.control.Alert;
+import javafx.stage.Stage;
 
+
+import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
-import java.net.Socket;
+
 
 public class Network {
 
     private static final String HOST = "localhost";
     private static final int PORT = 8189;
 
-    private SocketChannel channel;
+    private SocketChannel channel; // сокет-канал
+    NioEventLoopGroup workerGroup; // пул потоков для обработки сетевых событий
 
     private String host;
     private int port;
+
     private ObjectInputStream inputStream;
     private ObjectOutputStream outputStream;
-    private Socket socket;
-//    private ClientChat clientChat;
-    private String nickname;
-    private String login;
 
+    public Network() {
+        this(HOST, PORT);
+    }
+
+    public Network(String host, int port) {
+        this.host = host;
+        this.port = port;
+    }
 
     public Network(Callback onMessageReceivedCallback) {
-        Thread t = new Thread(() -> { // запускаем в отдельном потоке, т.к. future.channel().closeFuture().sync() блокирующая операция, будет заблокирован запуск интерфейса
-            // пул потоков для обработки сетевых событий
-            NioEventLoopGroup workerGroup = new NioEventLoopGroup();
+        Thread t = new Thread(() -> {
+            // запускаем в отдельном потоке, т.к. future.channel().closeFuture().sync() блокирующая операция => будет заблокирован запуск интерфейса ???
+            workerGroup = new NioEventLoopGroup();
             try {
                 // создаем клиентский Bootstrap
                 Bootstrap b = new Bootstrap();
                 // группа - канал - конвейер для сокетканала
-                b.group(workerGroup)
-                        .channel(NioSocketChannel.class)
-                        .handler(new ChannelInitializer<SocketChannel>() {
+                b.group(workerGroup);
+                b.channel(NioSocketChannel.class);
+                b.handler(new ChannelInitializer<SocketChannel>() {
                             @Override
                             protected void initChannel(SocketChannel socketChannel) throws Exception {
                                 channel = socketChannel; // запоминаем ссылку на соединение
@@ -61,10 +70,37 @@ public class Network {
     }
 
     public void close() {
-        channel.close(); // закрыть канал при завершении работы клиента
+        // закрыть канал при завершении работы клиента
+        channel.close();
     }
+
+/*
+
+    private void sendCommand(Command command) throws IOException {
+        outputStream.writeObject(command);
+    }
+*/
+
 
     public void sendMessage(String str) {
         channel.writeAndFlush(str);
     }
+
+
+
+
+
+    public static void showNetworkError(String errorDetails, String errorTitle, Stage dialogStage) {
+        Alert alert = new Alert(Alert.AlertType.ERROR);
+        if (dialogStage != null) {
+            alert.initOwner(dialogStage);
+        }
+        alert.setTitle("Network Error");
+        alert.setHeaderText(errorTitle);
+        alert.setContentText(errorDetails);
+        alert.showAndWait();
+    }
+
+
+
 }

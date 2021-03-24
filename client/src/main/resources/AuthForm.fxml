@@ -4,7 +4,8 @@
 <?import javafx.scene.control.*?>
 <?import javafx.scene.layout.*?>
 
-<VBox xmlns="http://javafx.com/javafx/11.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="ru.isakov.client.controller.AuthController">
+<VBox xmlns="http://javafx.com/javafx"
+      xmlns:fx="http://javafx.com/fxml" fx:controller="ru.isakov.client.controller.AuthController">
 
     <Label styleClass="label-title" text="Cloud File Storage" />
     <Region styleClass="auth-region" />

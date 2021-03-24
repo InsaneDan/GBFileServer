@@ -3,23 +3,24 @@ package ru.isakov.server;
 import io.netty.bootstrap.ServerBootstrap;
 import io.netty.channel.ChannelFuture;
 import io.netty.channel.ChannelInitializer;
+import io.netty.channel.ChannelOption;
 import io.netty.channel.EventLoopGroup;
 import io.netty.channel.nio.NioEventLoopGroup;
 import io.netty.channel.socket.SocketChannel;
 import io.netty.channel.socket.nio.NioServerSocketChannel;
 import io.netty.handler.codec.string.StringDecoder;
 import io.netty.handler.codec.string.StringEncoder;
-
-import java.util.logging.Logger;
-
-// to start debug mode: mvn clean javafx:run@debug
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 public class ServerApp {
+
+    private static final Logger logger = LoggerFactory.getLogger(ServerApp.class);
     private static final int PORT = 8189;
 
     public static void main(String[] args) {
 
-        Logger logger = Logger.getLogger(ServerApp.class.getName());
+//        Logger logger = Logger.getLogger(ServerApp.class.getName());
 
         int port = PORT; // порт по умолчанию, если не указан в параметрах при запуске
         if (args.length != 0) {
@@ -43,7 +44,10 @@ public class ServerApp {
 //                            socketChannel.pipeline().addLast(new MainHandler()); // работа с байтами
                             socketChannel.pipeline().addLast(new StringDecoder(), new StringEncoder(), new MainHandler()); // конвертируем String в ByteBuffer при отправке и получении
                         }
-                    });
+                    })
+                    .option(ChannelOption.SO_BACKLOG, 128)
+                    .option(ChannelOption.TCP_NODELAY, true)
+                    .childOption(ChannelOption.SO_KEEPALIVE, true);;
             logger.info("Сервер запущен");
             // сервер должен стартовать .sync() на указанном порту .bind(port)
             // ChannelFuture - исполняемая задача

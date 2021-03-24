@@ -8,10 +8,11 @@
     <groupId>ru.isakov</groupId>
     <packaging>pom</packaging>
     <version>1.0-SNAPSHOT</version>
+
     <modules>
-        <module>server</module>
-        <module>client</module>
         <module>clientserver</module>
+        <module>client</module>
+        <module>server</module>
     </modules>
 
     <properties>

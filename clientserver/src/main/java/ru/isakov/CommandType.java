@@ -5,6 +5,10 @@ public enum CommandType {
     AUTH_OK,
     REG,
     ERROR,
+
+
+
+
     PRIVATE_MESSAGE,
     PUBLIC_MESSAGE,
     SET_NICKNAME,

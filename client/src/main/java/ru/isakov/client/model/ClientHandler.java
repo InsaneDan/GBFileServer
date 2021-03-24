@@ -2,9 +2,6 @@ package ru.isakov.client.model;
 
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.channel.SimpleChannelInboundHandler;
-import ru.isakov.client.Callback;
-
-import java.nio.charset.StandardCharsets;
 
 public class ClientHandler extends SimpleChannelInboundHandler<String> {
     private Callback onMessageReceivedCallback;

@@ -4,7 +4,6 @@ import java.io.Serializable;
 import java.util.List;
 
 public class Command implements Serializable {
-/*
 
     private CommandType type;
     private Object data;
@@ -17,7 +16,7 @@ public class Command implements Serializable {
         return data;
     }
 
-    public static Command authCommand(String login, String password) {
+/*    public static Command authCommand(String login, String password) {
         Command command = new Command();
         command.type = CommandType.AUTH;
         command.data = new AuthCommandData(login, password);
@@ -97,7 +96,6 @@ public class Command implements Serializable {
         Command command = new Command();
         command.type = CommandType.END;
         return command;
-    }
-*/
+    }*/
 
 }
