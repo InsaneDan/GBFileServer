@@ -1,0 +1,63 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.*?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+
+<VBox xmlns="http://javafx.com/javafx/11.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="ru.isakov.client.controller.ClientController">
+    <HBox>
+        <children>
+            <MenuBar>
+                <Menu text="Menu">
+                    <Menu text="Приостановить синхронизацию">
+                        <items>
+                            <MenuItem fx:id="stopSyncing15" text="на 15 минут"/>
+                            <MenuItem fx:id="stopSyncing60" text="на 1 час"/>
+                            <MenuItem fx:id="stopSyncing" text="до включения вручную"/>
+                        </items>
+                    </Menu>
+                    <MenuItem text="Возобновить синхронизацию"/>
+                    <MenuItem text="Лог синхронизации"/>
+                    <SeparatorMenuItem/>
+                    <Menu text="Создать">
+                        <items>
+                            <MenuItem text="Новая папка"/>
+                            <MenuItem text="Новый файл (txt)"/>
+                            <SeparatorMenuItem/>
+                            <MenuItem text="Новая папка локально"/>
+                        </items>
+                    </Menu>
+                    <SeparatorMenuItem/>
+                    <MenuItem text="Открыть в браузере"/>
+                    <SeparatorMenuItem/>
+                    <MenuItem text="Sign out"/>
+                    <MenuItem text="Exit"/>
+                </Menu>
+                <Menu text="About">
+                    <MenuItem text="О программе"/>
+                </Menu>
+            </MenuBar>
+        </children>
+        <opaqueInsets>
+            <Insets/>
+        </opaqueInsets>
+    </HBox>
+    <Separator style="-fx-background-color: dark grey;" VBox.vgrow="ALWAYS"/>
+
+    <HBox prefHeight="425.0" prefWidth="616.0" VBox.vgrow="ALWAYS">
+        <fx:include fx:id="serverPanel" source="panel.fxml" HBox.hgrow="ALWAYS"/>
+        <fx:include fx:id="clientPanel" source="panel.fxml" HBox.hgrow="ALWAYS"/>
+    </HBox>
+
+    <HBox spacing="5">
+        <Button prefWidth="85" text="Отправить" focusTraversable="false" HBox.hgrow="ALWAYS"/>
+        <Button prefWidth="85" text="Загрузить" focusTraversable="false" HBox.hgrow="ALWAYS"/>
+        <Region prefWidth="20"/>
+        <Button prefWidth="85" text="Копировать" focusTraversable="false" onAction="#copyBtnAction" HBox.hgrow="ALWAYS"/>
+        <Button prefWidth="85" text="Перенести" focusTraversable="false" HBox.hgrow="ALWAYS"/>
+        <Button prefWidth="85" text="Удалить" focusTraversable="false" HBox.hgrow="ALWAYS"/>
+        <VBox.margin>
+            <Insets bottom="5.0" left="5.0" right="5.0" top="5.0"/>
+        </VBox.margin>
+    </HBox>
+</VBox>
