@@ -3,6 +3,7 @@ package ru.isakov.server.model;
 import io.netty.buffer.ByteBuf;
 import io.netty.channel.Channel;
 import io.netty.channel.ChannelHandlerContext;
+import io.netty.channel.ChannelInboundHandlerAdapter;
 import io.netty.channel.SimpleChannelInboundHandler;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -14,10 +15,9 @@ import java.util.concurrent.atomic.AtomicInteger;
 
 
 
-public class ServerHandler extends SimpleChannelInboundHandler<String> {
+public class ServerHandler extends ChannelInboundHandlerAdapter {
 
     private static final Logger logger = LoggerFactory.getLogger(ServerHandler.class);
-
 
     private static final List<Channel> channels = new ArrayList<>(); // список подключенных клиентов
     private static AtomicInteger newClientIndex = new AtomicInteger(1);
@@ -56,8 +56,8 @@ public class ServerHandler extends SimpleChannelInboundHandler<String> {
     }
 
     // channelRead0 для работы со строками
-    @Override
-    protected void channelRead0(ChannelHandlerContext channelHandlerContext, String s) throws Exception {
+//    @Override
+//    protected void channelRead0(ChannelHandlerContext channelHandlerContext, String s) throws Exception {
 //        System.out.println("Получено сообщение: " + s);
 //        if (s.startsWith("/")) {
 //            if (s.startsWith("/changename ")) { // /changename myname1
@@ -68,16 +68,22 @@ public class ServerHandler extends SimpleChannelInboundHandler<String> {
 //            return;
 //        }
 //        broadcastMessage(clientName, s);
-    }
+//    }
 
     // для работы с объектами (в виде байтов)
     @Override
     public void channelRead(ChannelHandlerContext ctx, Object msg) throws Exception {
-        ByteBuf buf = (ByteBuf) msg;
-        Command command = (Command) msg;
+        System.out.println("channelRead !!!!!!!");
+    }
 
 
-        buf.release();
+    protected void channelRead0(ChannelHandlerContext channelHandlerContext, String s) throws Exception {
+//        ByteBuf buf = (ByteBuf) command;
+
+        System.out.println(s);
+
+//        buf.release();
+
     }
 
     // сообщения от сервера

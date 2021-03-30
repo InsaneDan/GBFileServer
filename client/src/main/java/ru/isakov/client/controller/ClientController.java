@@ -9,6 +9,7 @@ import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import ru.isakov.Command;
 import ru.isakov.client.model.Network;
 
 import java.io.IOException;
@@ -80,5 +81,7 @@ public class ClientController implements Initializable {
     }
 
 
-
+    public void sendObject(ActionEvent actionEvent) {
+        network.sendCommand(Command.exitCommand());
+    }
 }

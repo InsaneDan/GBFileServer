@@ -95,7 +95,7 @@ public class Command implements Serializable {
     public static Command exitCommand() {
         Command command = new Command();
         command.type = CommandType.EXIT;
-        command.data = null;
+        command.data = "exit";
         return command;
     }
 

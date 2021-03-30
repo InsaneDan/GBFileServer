@@ -12,6 +12,8 @@ import javafx.scene.control.ButtonType;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import ru.isakov.Command;
+
+import java.net.InetSocketAddress;
 //import ru.isakov.Command;
 
 
@@ -47,7 +49,7 @@ public class Network {
                 future.channel().closeFuture().sync(); // ждем команду на остановку
             } catch (Exception e) {
                 logger.error("Не удалось установить соединение с сервером!");
-                logger.error(e.toString());
+                logger.error(e.getMessage());
                 Alert alert = new Alert(Alert.AlertType.ERROR, "Не удалось установить соединение с сервером!", ButtonType.OK);
                 alert.showAndWait();
             } finally {
@@ -68,7 +70,7 @@ public class Network {
     }
 
     public void sendCommand(Command command) {
-        channel.writeAndFlush(command);
+        channel.writeAndFlush("command");
     }
 
 }

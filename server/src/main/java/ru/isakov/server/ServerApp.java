@@ -43,7 +43,8 @@ public class ServerApp {
                         @Override
                         protected void initChannel(SocketChannel socketChannel) throws Exception {
 //                            socketChannel.pipeline().addLast(new ServerHandler()); // работа с байтами
-                            socketChannel.pipeline().addLast(new StringDecoder(), new StringEncoder(), new ServerHandler()); // конвертируем String в ByteBuffer при отправке и получении
+                            // конвертируем String в ByteBuffer при отправке и получении
+                            socketChannel.pipeline().addLast(new StringDecoder(), new StringEncoder(), new ServerHandler());
                         }
                     })
                     .option(ChannelOption.SO_BACKLOG, 128)
@@ -54,14 +55,14 @@ public class ServerApp {
             // ChannelFuture - исполняемая задача
             ChannelFuture future = b.bind(port).sync();
 
-            // TODO: 24.03.2021 подключение базы данных для проверки логина/пароля, директории и т.д.
+            // TODO: 24.03.2021 подключение базы данных для проверки логина/пароля и получения рабочей директории
 
             // ожидаем, пока сервер не будет остановлен
             future.channel().closeFuture().sync();
 
 
         } catch (Exception e) {
-           logger.error(e.toString());
+           logger.error(e.getMessage());
         } finally {
 
             // TODO: 24.03.2021 отсоединиться от БД

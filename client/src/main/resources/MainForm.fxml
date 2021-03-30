@@ -64,7 +64,7 @@
    </HBox>
 
     <HBox spacing="5">
-        <Button focusTraversable="false" prefWidth="85" text="Папка" HBox.hgrow="ALWAYS" />
+        <Button focusTraversable="false" onAction="#sendObject" prefWidth="85" text="ТЕСТ" HBox.hgrow="ALWAYS" />
         <Region prefWidth="20" />
         <Button focusTraversable="false" onAction="#copyBtnAction" prefWidth="85" text="Копировать" HBox.hgrow="ALWAYS" />
         <Button focusTraversable="false" prefWidth="85" text="Перенести" HBox.hgrow="ALWAYS" />
