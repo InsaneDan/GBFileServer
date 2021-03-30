@@ -14,6 +14,7 @@ GBFileServer
 
 
 Исходно: JDK-11
+
 Для запуска:
 1) серверной части: run server.ServerApp.main();
 2) клиентской части: 
