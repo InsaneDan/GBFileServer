@@ -12,6 +12,9 @@ import java.util.Map;
 
 public class WatchFoldersService {
 
+    // TODO: должен автоматически генерить команды и, если нужно, - передавать файлы
+    // TODO: после создания нового файла дополнительно дважды выстреливает модификация (видимо, при изменении даты создания и последнего изменения)
+
     private static final Logger logger = LoggerFactory.getLogger(WatchFoldersService.class);
 
     private static Map<WatchKey, Path> keyPathMap = new HashMap<>();
