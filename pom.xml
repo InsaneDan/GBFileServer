@@ -10,9 +10,9 @@
     <version>1.0-SNAPSHOT</version>
 
     <modules>
-        <module>clientserver</module>
         <module>client</module>
         <module>server</module>
+        <module>clientserver</module>
     </modules>
 
     <properties>

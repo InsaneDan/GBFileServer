@@ -10,17 +10,18 @@ import io.netty.channel.socket.SocketChannel;
 import io.netty.channel.socket.nio.NioServerSocketChannel;
 import io.netty.handler.codec.string.StringDecoder;
 import io.netty.handler.codec.string.StringEncoder;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import ru.isakov.server.model.ServerHandler;
 
 public class ServerApp {
 
     private static final Logger logger = LoggerFactory.getLogger(ServerApp.class);
+
     private static final int PORT = 8189;
 
     public static void main(String[] args) {
-
-//        Logger logger = Logger.getLogger(ServerApp.class.getName());
 
         int port = PORT; // порт по умолчанию, если не указан в параметрах при запуске
         if (args.length != 0) {
@@ -41,8 +42,8 @@ public class ServerApp {
                         //
                         @Override
                         protected void initChannel(SocketChannel socketChannel) throws Exception {
-//                            socketChannel.pipeline().addLast(new MainHandler()); // работа с байтами
-                            socketChannel.pipeline().addLast(new StringDecoder(), new StringEncoder(), new MainHandler()); // конвертируем String в ByteBuffer при отправке и получении
+//                            socketChannel.pipeline().addLast(new ServerHandler()); // работа с байтами
+                            socketChannel.pipeline().addLast(new StringDecoder(), new StringEncoder(), new ServerHandler()); // конвертируем String в ByteBuffer при отправке и получении
                         }
                     })
                     .option(ChannelOption.SO_BACKLOG, 128)
@@ -52,11 +53,19 @@ public class ServerApp {
             // сервер должен стартовать .sync() на указанном порту .bind(port)
             // ChannelFuture - исполняемая задача
             ChannelFuture future = b.bind(port).sync();
+
+            // TODO: 24.03.2021 подключение базы данных для проверки логина/пароля, директории и т.д.
+
             // ожидаем, пока сервер не будет остановлен
             future.channel().closeFuture().sync();
+
+
         } catch (Exception e) {
-            e.printStackTrace();
+           logger.error(e.toString());
         } finally {
+
+            // TODO: 24.03.2021 отсоединиться от БД
+
             // закрываем пулы потоков после остановки сервера (даем возможность GC очистить память)
             bossGroup.shutdownGracefully();
             workerGroup.shutdownGracefully();

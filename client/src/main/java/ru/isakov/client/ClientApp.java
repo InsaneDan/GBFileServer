@@ -41,6 +41,7 @@ public class ClientApp extends Application {
         scene.getStylesheets().add("/style.css");
 //        primaryStage.setResizable(false);
         primaryStage.setScene(scene);
+
         primaryStage.show();
     }
 

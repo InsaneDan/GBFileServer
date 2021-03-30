@@ -8,16 +8,11 @@ import io.netty.channel.socket.nio.NioSocketChannel;
 import io.netty.handler.codec.string.StringDecoder;
 import io.netty.handler.codec.string.StringEncoder;
 import javafx.scene.control.Alert;
-import javafx.stage.Stage;
+import javafx.scene.control.ButtonType;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import ru.isakov.client.ClientApp;
-import ru.isakov.client.controller.ClientController;
-
-
-import java.io.IOException;
-import java.io.ObjectInputStream;
-import java.io.ObjectOutputStream;
+import ru.isakov.Command;
+//import ru.isakov.Command;
 
 
 public class Network {
@@ -25,34 +20,10 @@ public class Network {
     private static final Logger logger = LoggerFactory.getLogger(Network.class);
 
     private static final String HOST = "localhost";
-    private static final int PORT = 8118;
+    private static final int PORT = 8189;
 
     private SocketChannel channel; // сокет-канал
     NioEventLoopGroup workerGroup; // пул потоков для обработки сетевых событий
-
-    private String host;
-    private int port;
-
-    private ObjectInputStream inputStream;
-    private ObjectOutputStream outputStream;
-
-    private ClientApp clientApp;
-
-
-    // конструктор по умолчанию
-    public Network() {
-        this(HOST, PORT);
-    }
-
-    public Network(String host, int port) {
-        this.host = host;
-        this.port = port;
-    }
-
-    public Network(ClientApp clientApp) {
-        this();
-        this.clientApp = clientApp;
-    }
 
     public Network(Callback onMessageReceivedCallback) {
         Thread t = new Thread(() -> {
@@ -76,7 +47,9 @@ public class Network {
                 future.channel().closeFuture().sync(); // ждем команду на остановку
             } catch (Exception e) {
                 logger.error("Не удалось установить соединение с сервером!");
-                e.printStackTrace();
+                logger.error(e.toString());
+                Alert alert = new Alert(Alert.AlertType.ERROR, "Не удалось установить соединение с сервером!", ButtonType.OK);
+                alert.showAndWait();
             } finally {
                 workerGroup.shutdownGracefully();
             }
@@ -86,37 +59,16 @@ public class Network {
     }
 
     public void close() {
+        // сообщение о завершении работы клиента
+//        sendCommand(Command.exitCommand());
         // закрыть канал при завершении работы клиента
-        channel.close();
-    }
-
-/*
-
-    private void sendCommand(Command command) throws IOException {
-        outputStream.writeObject(command);
-    }
-*/
-
-
-    public void sendMessage(String str) {
-        channel.writeAndFlush(str);
-    }
-
-
-
-
-
-    public static void showNetworkError(String errorDetails, String errorTitle, Stage dialogStage) {
-        Alert alert = new Alert(Alert.AlertType.ERROR);
-        if (dialogStage != null) {
-            alert.initOwner(dialogStage);
+        if (channel != null && channel.isOpen()) {
+            channel.close();
         }
-        alert.setTitle("Network Error");
-        alert.setHeaderText(errorTitle);
-        alert.setContentText(errorDetails);
-        alert.showAndWait();
     }
 
-
+    public void sendCommand(Command command) {
+        channel.writeAndFlush(command);
+    }
 
 }

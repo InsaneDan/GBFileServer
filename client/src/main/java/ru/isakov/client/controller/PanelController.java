@@ -1,6 +1,5 @@
 package ru.isakov.client.controller;
 
-import javafx.application.Platform;
 import javafx.beans.property.SimpleObjectProperty;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.event.ActionEvent;
@@ -8,13 +7,12 @@ import javafx.event.EventHandler;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.control.*;
+import javafx.scene.control.cell.TextFieldTableCell;
 import javafx.scene.input.MouseButton;
 import javafx.scene.input.MouseEvent;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import ru.isakov.client.model.FileInfo;
-import ru.isakov.client.model.Network;
-import ru.isakov.client.service.WatchFoldersService;
 
 import java.io.IOException;
 import java.net.URL;
@@ -50,6 +48,19 @@ public class PanelController implements Initializable {
         TableColumn<FileInfo, String> filenameColumn = new TableColumn<>("Имя");
         filenameColumn.setCellValueFactory(param -> new SimpleStringProperty(param.getValue().getFilename()));
         filenameColumn.setPrefWidth(250);
+
+        // TODO: 29.03.2021 создание папки и переименование файлов через ДЛКМ
+//        filenameColumn.setOnEditCommit(
+//                new EventHandler<TableColumn.CellEditEvent<T, String>>() {
+//                    @Override
+//                    public void handle(CellEditEvent<Person, String> t) {
+//                        ((Person) t.getTableView().getItems().get(
+//                                t.getTablePosition().getRow())
+//                        ).setFirstName(t.getNewValue());
+//                    }
+//                }
+//        );
+
 
         TableColumn<FileInfo, Long> fileSizeColumn = new TableColumn<>("Размер");
         fileSizeColumn.setCellValueFactory(param -> new SimpleObjectProperty<>(param.getValue().getSize()));
@@ -103,7 +114,7 @@ public class PanelController implements Initializable {
         });
 
         // обновить список файлов в текущем положении
-        updateList(Paths.get("."));
+        // updateList(Paths.get(".")); // обновление в ClientController
     }
 
     public void updateList(Path path) {

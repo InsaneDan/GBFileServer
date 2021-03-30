@@ -4,10 +4,8 @@ import javafx.application.Platform;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
-import javafx.scene.control.Alert;
-import javafx.scene.control.ButtonType;
-import javafx.scene.control.TextArea;
-import javafx.scene.control.TextField;
+import javafx.scene.control.*;
+import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -26,21 +24,25 @@ public class ClientController implements Initializable {
 
     private Network network;
 
-    @FXML
-    VBox clientPanel, serverPanel;
+    @FXML VBox clientPanel, serverPanel;
+    PanelController serverPanelController, clientPanelController;
 
-    @FXML
-    TextField msgField;
-
-    @FXML
-    TextArea mainArea;
+    @FXML HBox createDirBox;
+    @FXML TextField createDirPath;
+    @FXML Button createDirConfirmButton;
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
 
-        network = new Network((args) -> {
-            mainArea.appendText((String)args[0]);
-        });
+        this.serverPanelController = (PanelController) serverPanel.getProperties().get("ctrlr");
+        this.clientPanelController = (PanelController) clientPanel.getProperties().get("ctrlr");
+
+        serverPanelController.updateList(Paths.get("D:/testDirServer"));
+        clientPanelController.updateList(Paths.get("D:/testDirClient"));
+
+        network = new Network((args) -> System.out.println((String)args[0]));
+
+
     }
 
     public void exitAction() {
@@ -50,22 +52,19 @@ public class ClientController implements Initializable {
 
     public void copyBtnAction(ActionEvent actionEvent) {
 
-        PanelController leftPC = (PanelController) serverPanel.getProperties().get("ctrlr");
-        PanelController rightPC = (PanelController) clientPanel.getProperties().get("ctrlr");
-
-        if (leftPC.getSelectedFilename() == null && rightPC.getSelectedFilename() == null) {
+        if (serverPanelController.getSelectedFilename() == null && clientPanelController.getSelectedFilename() == null) {
             Alert alert = new Alert(Alert.AlertType.ERROR, "Ни один файл не был выбран", ButtonType.OK);
             alert.showAndWait();
             return;
         }
         PanelController srcPC = null, dstPC = null;
-        if (leftPC.getSelectedFilename() != null) {
-            srcPC = leftPC;
-            dstPC = rightPC;
+        if (serverPanelController.getSelectedFilename() != null) {
+            srcPC = serverPanelController;
+            dstPC = clientPanelController;
         }
-        if (rightPC.getSelectedFilename() != null) {
-            srcPC = rightPC;
-            dstPC = leftPC;
+        if (clientPanelController.getSelectedFilename() != null) {
+            srcPC = clientPanelController;
+            dstPC = serverPanelController;
         }
 
         Path srcPath = Paths.get(srcPC.getCurrentPath(), srcPC.getSelectedFilename());
@@ -79,5 +78,7 @@ public class ClientController implements Initializable {
             alert.showAndWait();
         }
     }
+
+
 
 }

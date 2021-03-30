@@ -13,7 +13,6 @@ public class ClientHandler extends SimpleChannelInboundHandler<String> {
     @Override
     protected void channelRead0(ChannelHandlerContext channelHandlerContext, String s) throws Exception {
         if (onMessageReceivedCallback != null) {
-            System.out.println(s);
             onMessageReceivedCallback.callback(s);
         }
     }

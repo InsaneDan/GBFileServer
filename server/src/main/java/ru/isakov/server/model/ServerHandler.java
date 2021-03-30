@@ -1,25 +1,50 @@
-package ru.isakov.server;
+package ru.isakov.server.model;
 
 import io.netty.buffer.ByteBuf;
 import io.netty.channel.Channel;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.channel.SimpleChannelInboundHandler;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import ru.isakov.Command;
 
-import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.atomic.AtomicInteger;
-import java.util.logging.Logger;
 
-public class MainHandler extends SimpleChannelInboundHandler<String> {
 
-    Logger logger = Logger.getLogger(ServerApp.class.getName());
+
+public class ServerHandler extends SimpleChannelInboundHandler<String> {
+
+    private static final Logger logger = LoggerFactory.getLogger(ServerHandler.class);
 
 
     private static final List<Channel> channels = new ArrayList<>(); // список подключенных клиентов
     private static AtomicInteger newClientIndex = new AtomicInteger(1);
     private String clientName;
+
+
+    // TODO: 26.03.2021 после авторизации для каждого клиента своя папка, временно - общая
+    private String serverPath = "D:/testDirServer";
+
+    private ChannelHandlerContext ctx;
+
+    public void setServerPath(String serverPath){
+        this.serverPath = serverPath;
+    }
+
+    public String getServerPath(){
+        return serverPath;
+    }
+
+    public void setCtx(ChannelHandlerContext ctx) {
+        this.ctx = ctx;
+    }
+
+
+
+
+
 
     @Override
     public void channelActive(ChannelHandlerContext ctx) throws Exception {
@@ -27,7 +52,7 @@ public class MainHandler extends SimpleChannelInboundHandler<String> {
         channels.add(ctx.channel());
         clientName = "Клиент #" + newClientIndex;
         newClientIndex.getAndIncrement();
-        broadcastMessage("SERVER",  "Подключился новый клиент: " + clientName);
+        logger.info("Подключился новый клиент: " + clientName);
     }
 
     // channelRead0 для работы со строками
@@ -50,6 +75,8 @@ public class MainHandler extends SimpleChannelInboundHandler<String> {
     public void channelRead(ChannelHandlerContext ctx, Object msg) throws Exception {
         ByteBuf buf = (ByteBuf) msg;
         Command command = (Command) msg;
+
+
         buf.release();
     }
 
@@ -76,4 +103,8 @@ public class MainHandler extends SimpleChannelInboundHandler<String> {
         broadcastMessage("SERVER", "Клиент " + clientName + " вышел из сети");
         ctx.close();
     }
+
+
+
+
 }
