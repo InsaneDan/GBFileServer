@@ -8,15 +8,15 @@ public class Command implements Serializable {
     private CommandType type;
     private Object data;
 
-    public CommandType getType() {
-        return type;
-    }
+    public CommandType getType() { return type; }
 
-    public Object getData() {
-        return data;
-    }
+    public void setType(CommandType type) { this.type = type; }
 
-/*    public static Command authCommand(String login, String password) {
+    public Object getData() { return data; }
+
+    public void setData(Object data) { this.data = data; }
+
+    /*    public static Command authCommand(String login, String password) {
         Command command = new Command();
         command.type = CommandType.AUTH;
         command.data = new AuthCommandData(login, password);

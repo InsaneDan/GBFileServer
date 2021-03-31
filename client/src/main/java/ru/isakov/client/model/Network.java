@@ -5,6 +5,9 @@ import io.netty.channel.*;
 import io.netty.channel.nio.NioEventLoopGroup;
 import io.netty.channel.socket.SocketChannel;
 import io.netty.channel.socket.nio.NioSocketChannel;
+import io.netty.handler.codec.serialization.ClassResolvers;
+import io.netty.handler.codec.serialization.ObjectDecoder;
+import io.netty.handler.codec.serialization.ObjectEncoder;
 import io.netty.handler.codec.string.StringDecoder;
 import io.netty.handler.codec.string.StringEncoder;
 import javafx.scene.control.Alert;
@@ -42,7 +45,13 @@ public class Network {
                             protected void initChannel(SocketChannel socketChannel) throws Exception {
                                 channel = socketChannel; // запоминаем ссылку на соединение
                                 // преобразуем String в ByteBuffer, иначе при пересылке (в методе sendMessage) и получении будет ошибка
-                                socketChannel.pipeline().addLast(new StringDecoder(), new StringEncoder(), new ClientHandler(onMessageReceivedCallback));
+                                socketChannel.pipeline().addLast(
+//                                        new StringDecoder(),
+//                                        new StringEncoder(),
+//                                        new ClientHandler(onMessageReceivedCallback));
+                                        new ObjectEncoder(),
+                                        new ObjectDecoder(ClassResolvers.cacheDisabled(null)),
+                                        new ObjectEchoClientHandler());
                             }
                         });
                 ChannelFuture future = b.connect(HOST, PORT).sync();

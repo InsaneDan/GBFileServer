@@ -8,26 +8,27 @@ import io.netty.channel.EventLoopGroup;
 import io.netty.channel.nio.NioEventLoopGroup;
 import io.netty.channel.socket.SocketChannel;
 import io.netty.channel.socket.nio.NioServerSocketChannel;
-import io.netty.handler.codec.string.StringDecoder;
-import io.netty.handler.codec.string.StringEncoder;
 
+import io.netty.handler.codec.LengthFieldBasedFrameDecoder;
+import io.netty.handler.codec.LengthFieldPrepender;
+import io.netty.handler.codec.serialization.ClassResolvers;
+import io.netty.handler.codec.serialization.ObjectDecoder;
+import io.netty.handler.codec.serialization.ObjectEncoder;
+import io.netty.handler.stream.ChunkedWriteHandler;
+import io.netty.util.CharsetUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import ru.isakov.server.model.ServerHandler;
+import ru.isakov.server.model.*;
 
 public class ServerApp {
 
     private static final Logger logger = LoggerFactory.getLogger(ServerApp.class);
-
+    // порт по умолчанию, если не указан в параметрах при запуске
     private static final int PORT = 8189;
 
     public static void main(String[] args) {
 
-        int port = PORT; // порт по умолчанию, если не указан в параметрах при запуске
-        if (args.length != 0) {
-            port = Integer.parseInt(args[0]);
-        }
-
+        int port = args.length > 0 ? Integer.parseInt(args[0]) : PORT;
         // создаем два пула потоков (менеджеры потоков): для обработки подключений (bossGroup) и обработки данных
         EventLoopGroup bossGroup = new NioEventLoopGroup(1);
         EventLoopGroup workerGroup = new NioEventLoopGroup();
@@ -39,12 +40,18 @@ public class ServerApp {
                     .channel(NioServerSocketChannel.class)
                     .childHandler(new ChannelInitializer<SocketChannel>() {
                         // после подключения клиента информация о соединении хранится в SocketChannel
-                        //
                         @Override
                         protected void initChannel(SocketChannel socketChannel) throws Exception {
-//                            socketChannel.pipeline().addLast(new ServerHandler()); // работа с байтами
-                            // конвертируем String в ByteBuffer при отправке и получении
-                            socketChannel.pipeline().addLast(new StringDecoder(), new StringEncoder(), new ServerHandler());
+                            socketChannel.pipeline().addLast(
+                                    // inbound
+                                    new LengthFieldBasedFrameDecoder(Integer.MAX_VALUE, 0, 4, 0, 4),
+                                    new ObjectDecoder(ClassResolvers.cacheDisabled(null)),
+                                    new ChunkedWriteHandler(),
+                                    // outbound
+                                    new LengthFieldPrepender(4),
+                                    new ObjectEncoder(),
+                                    // app
+                                    new ObjectEchoServerHandler());
                         }
                     })
                     .option(ChannelOption.SO_BACKLOG, 128)

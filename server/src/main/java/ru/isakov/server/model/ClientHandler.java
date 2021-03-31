@@ -1,6 +1,8 @@
 package ru.isakov.server.model;
 
-public class ClientHandler {
+import io.netty.channel.ChannelOutboundHandlerAdapter;
+
+public class ClientHandler extends ChannelOutboundHandlerAdapter {
 
 
 

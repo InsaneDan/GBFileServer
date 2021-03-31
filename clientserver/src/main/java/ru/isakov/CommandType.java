@@ -4,17 +4,16 @@ public enum CommandType {
     AUTH,
     AUTH_OK,
     REG,
+    REG_OK,
+    FILE_LIST,
+    FILE_UPLOAD,
+    FILE_DOWNLOAD,
+    FILE_MOVE,
+    FILE_DELETE,
+    DIR_CREATE,
+    DIR_DELETE,
+    MESSAGE,
     ERROR,
+    EXIT;
 
-
-
-
-    PRIVATE_MESSAGE,
-    PUBLIC_MESSAGE,
-    SET_NICKNAME,
-    SET_NICKNAME_OK,
-    INFO_MESSAGE,
-    CLIENT_MESSAGE,
-    UPDATE_USERS_LIST,
-    EXIT,
 }
