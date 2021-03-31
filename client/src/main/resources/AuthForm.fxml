@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.*?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+
+<VBox xmlns="http://javafx.com/javafx"
+      xmlns:fx="http://javafx.com/fxml" fx:controller="ru.isakov.client.controller.AuthController">
+
+    <Label styleClass="label-title" text="Cloud File Storage" />
+    <Region styleClass="auth-region" />
+
+    <TextField fx:id="login" promptText="Логин" styleClass="auth-fields" />
+    <Region styleClass="auth-region" />
+
+    <PasswordField fx:id="password" promptText="Пароль" styleClass="auth-fields" />
+    <Region styleClass="auth-region" />
+
+    <HBox alignment="CENTER">
+        <Button fx:id="btnSignIn" defaultButton="true" styleClass="auth-buttons" text="Вход" onAction="#signIn" />
+        <Region HBox.hgrow="ALWAYS" />
+        <Button fx:id="btnSignUp" styleClass="auth-buttons" text="Регистрация" onAction="#signUp" />
+    </HBox>
+
+    <padding>
+        <Insets bottom="43.0" left="60.0" right="60.0" top="20.0" />
+    </padding>
+
+</VBox>
