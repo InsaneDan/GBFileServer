@@ -3,10 +3,15 @@ package ru.isakov.client.controller;
 import javafx.application.Platform;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
+import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
+import javafx.scene.Parent;
+import javafx.scene.Scene;
 import javafx.scene.control.*;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
+import javafx.stage.Modality;
+import javafx.stage.Stage;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import ru.isakov.Command;
@@ -28,22 +33,48 @@ public class ClientController implements Initializable {
     @FXML VBox clientPanel, serverPanel;
     PanelController serverPanelController, clientPanelController;
 
+    @FXML AuthController authController;
+
     @FXML HBox createDirBox;
     @FXML TextField createDirPath;
     @FXML Button createDirConfirmButton;
+
+    public Network getNetwork() {
+        return network;
+    }
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
 
         this.serverPanelController = (PanelController) serverPanel.getProperties().get("ctrlr");
         this.clientPanelController = (PanelController) clientPanel.getProperties().get("ctrlr");
-
+        // TODO: исправить пути к папкам (сервер / клиент)
         serverPanelController.updateList(Paths.get("D:/testDirServer"));
         clientPanelController.updateList(Paths.get("D:/testDirClient"));
 
-        network = new Network((args) -> System.out.println((String)args[0]));
+        network = new Network();
 
+        showAuth();
+    }
 
+    private void showAuth(){
+        try {
+            Stage authStage = new Stage();
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("/AuthForm.fxml"));
+            Parent root = loader.load();
+            authController = loader.getController();
+            authController.setParentController(this);
+            authStage.setOnCloseRequest(event -> authController.exitAction());
+            authStage.setTitle("Authentication");
+            Scene scene = new Scene(root, 320, 200);
+            scene.getStylesheets().add("/style.css");
+            authStage.initModality(Modality.APPLICATION_MODAL);
+            authStage.setResizable(false);
+            authStage.setScene(scene);
+            authStage.showAndWait();
+        } catch (IOException e) {
+            logger.error(e.toString());
+        }
     }
 
     public void exitAction() {
@@ -84,4 +115,8 @@ public class ClientController implements Initializable {
     public void sendObject(ActionEvent actionEvent) {
         network.sendCommand(Command.exitCommand());
     }
+
+
+
+
 }

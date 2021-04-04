@@ -49,12 +49,12 @@ public class PanelController implements Initializable {
         filenameColumn.setCellValueFactory(param -> new SimpleStringProperty(param.getValue().getFilename()));
         filenameColumn.setPrefWidth(250);
 
-        // TODO: 29.03.2021 создание папки и переименование файлов через ДЛКМ
+        // TODO: 29.03.2021 создание папки и переименование файлов в TableView через ДЛКМ
 //        filenameColumn.setOnEditCommit(
 //                new EventHandler<TableColumn.CellEditEvent<T, String>>() {
 //                    @Override
-//                    public void handle(CellEditEvent<Person, String> t) {
-//                        ((Person) t.getTableView().getItems().get(
+//                    public void handle(CellEditEvent<File, String> t) {
+//                        ((File) t.getTableView().getItems().get(
 //                                t.getTablePosition().getRow())
 //                        ).setFirstName(t.getNewValue());
 //                    }

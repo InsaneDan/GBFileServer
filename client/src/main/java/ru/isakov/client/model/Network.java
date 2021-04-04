@@ -1,24 +1,26 @@
 package ru.isakov.client.model;
 
 import io.netty.bootstrap.Bootstrap;
-import io.netty.channel.*;
+import io.netty.channel.ChannelFuture;
+import io.netty.channel.ChannelInitializer;
+import io.netty.channel.ChannelPipeline;
 import io.netty.channel.nio.NioEventLoopGroup;
 import io.netty.channel.socket.SocketChannel;
 import io.netty.channel.socket.nio.NioSocketChannel;
+import io.netty.handler.codec.LengthFieldBasedFrameDecoder;
+import io.netty.handler.codec.LengthFieldPrepender;
 import io.netty.handler.codec.serialization.ClassResolvers;
 import io.netty.handler.codec.serialization.ObjectDecoder;
 import io.netty.handler.codec.serialization.ObjectEncoder;
-import io.netty.handler.codec.string.StringDecoder;
-import io.netty.handler.codec.string.StringEncoder;
 import javafx.scene.control.Alert;
 import javafx.scene.control.ButtonType;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import ru.isakov.Command;
+import ru.isakov.CommandHandler;
 
-import java.net.InetSocketAddress;
-//import ru.isakov.Command;
-
+import java.util.ArrayList;
+import java.util.List;
 
 public class Network {
 
@@ -26,13 +28,26 @@ public class Network {
 
     private static final String HOST = "localhost";
     private static final int PORT = 8189;
+    private final String host;
+    private final int port;
 
     private SocketChannel channel; // сокет-канал
     NioEventLoopGroup workerGroup; // пул потоков для обработки сетевых событий
 
-    public Network(Callback onMessageReceivedCallback) {
+    private final CommandHandler commandHandler = new CommandHandler(1);
+
+    // конструктор
+    public Network() { this(HOST, PORT); }
+
+    public Network(String host, int port) {
+        this.host = host;
+        this.port = port;
+        this.connect();
+    }
+
+    public void connect() {
         Thread t = new Thread(() -> {
-            // запускаем в отдельном потоке, т.к. future.channel().closeFuture().sync() блокирующая операция => будет заблокирован запуск интерфейса ???
+            // запускаем в отдельном потоке
             workerGroup = new NioEventLoopGroup();
             try {
                 // создаем клиентский Bootstrap
@@ -44,17 +59,15 @@ public class Network {
                             @Override
                             protected void initChannel(SocketChannel socketChannel) throws Exception {
                                 channel = socketChannel; // запоминаем ссылку на соединение
-                                // преобразуем String в ByteBuffer, иначе при пересылке (в методе sendMessage) и получении будет ошибка
-                                socketChannel.pipeline().addLast(
-//                                        new StringDecoder(),
-//                                        new StringEncoder(),
-//                                        new ClientHandler(onMessageReceivedCallback));
-                                        new ObjectEncoder(),
-                                        new ObjectDecoder(ClassResolvers.cacheDisabled(null)),
-                                        new ObjectEchoClientHandler());
+                                ChannelPipeline p = socketChannel.pipeline();
+                                p.addLast(new LengthFieldBasedFrameDecoder(Integer.MAX_VALUE, 0, 4, 0, 4));
+                                p.addLast(new LengthFieldPrepender(4));
+                                p.addLast(new ObjectDecoder(ClassResolvers.cacheDisabled(null)));
+                                p.addLast(new ObjectEncoder());
+                                p.addLast(commandHandler);
                             }
                         });
-                ChannelFuture future = b.connect(HOST, PORT).sync();
+                ChannelFuture future = b.connect(host, port).sync();
                 future.channel().closeFuture().sync(); // ждем команду на остановку
             } catch (Exception e) {
                 logger.error("Не удалось установить соединение с сервером!");
@@ -67,6 +80,7 @@ public class Network {
         });
         t.setDaemon(true); // для автозавершения треда при закрытии формы (точнее - основного потока)
         t.start();
+
     }
 
     public void close() {
@@ -79,7 +93,8 @@ public class Network {
     }
 
     public void sendCommand(Command command) {
-        channel.writeAndFlush("command");
+//        channel.writeAndFlush(command);
+        commandHandler.sendCommand(Command.exitCommand());
     }
 
 }

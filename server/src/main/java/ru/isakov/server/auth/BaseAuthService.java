@@ -17,7 +17,7 @@ public class BaseAuthService implements AuthService {
     private static Connection connection;
     private static Statement statement;
 
-    // FIXME: 31.03.2021 вместо списка логинов сохранять список ClientHandler'ов (еще не реализован)
+    // FIXME: 31.03.2021 вместо списка логинов сохранять список ???
 
     private final List<String> clients = new ArrayList<>();
 

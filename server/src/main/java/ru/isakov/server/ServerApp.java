@@ -1,24 +1,19 @@
 package ru.isakov.server;
 
 import io.netty.bootstrap.ServerBootstrap;
-import io.netty.channel.ChannelFuture;
-import io.netty.channel.ChannelInitializer;
-import io.netty.channel.ChannelOption;
-import io.netty.channel.EventLoopGroup;
+import io.netty.channel.*;
 import io.netty.channel.nio.NioEventLoopGroup;
 import io.netty.channel.socket.SocketChannel;
 import io.netty.channel.socket.nio.NioServerSocketChannel;
-
 import io.netty.handler.codec.LengthFieldBasedFrameDecoder;
 import io.netty.handler.codec.LengthFieldPrepender;
 import io.netty.handler.codec.serialization.ClassResolvers;
 import io.netty.handler.codec.serialization.ObjectDecoder;
 import io.netty.handler.codec.serialization.ObjectEncoder;
-import io.netty.handler.stream.ChunkedWriteHandler;
-import io.netty.util.CharsetUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import ru.isakov.server.model.*;
+import ru.isakov.CommandHandler;
+import ru.isakov.CommandType;
 
 public class ServerApp {
 
@@ -26,7 +21,14 @@ public class ServerApp {
     // порт по умолчанию, если не указан в параметрах при запуске
     private static final int PORT = 8189;
 
+
     public static void main(String[] args) {
+
+        int lengthFieldLength = (int) Math.ceil(CommandType.values().length % 8); // длина поля зависит от количества доступных команд в списке
+        int bytesToStrip = lengthFieldLength;
+
+
+        CommandHandler commandHandler = new CommandHandler(0);
 
         int port = args.length > 0 ? Integer.parseInt(args[0]) : PORT;
         // создаем два пула потоков (менеджеры потоков): для обработки подключений (bossGroup) и обработки данных
@@ -42,16 +44,23 @@ public class ServerApp {
                         // после подключения клиента информация о соединении хранится в SocketChannel
                         @Override
                         protected void initChannel(SocketChannel socketChannel) throws Exception {
-                            socketChannel.pipeline().addLast(
-                                    // inbound
-                                    new LengthFieldBasedFrameDecoder(Integer.MAX_VALUE, 0, 4, 0, 4),
-                                    new ObjectDecoder(ClassResolvers.cacheDisabled(null)),
-                                    new ChunkedWriteHandler(),
-                                    // outbound
-                                    new LengthFieldPrepender(4),
-                                    new ObjectEncoder(),
-                                    // app
-                                    new ObjectEchoServerHandler());
+//                            socketChannel.pipeline().addLast(
+//                                    // inbound
+//                                    new LengthFieldBasedFrameDecoder(Integer.MAX_VALUE, 0, lengthFieldLength, 0, bytesToStrip),
+//                                    new ObjectDecoder(ClassResolvers.cacheDisabled(null)),
+////                                    new ChunkedWriteHandler(),
+//                                    // outbound
+//                                    new LengthFieldPrepender(lengthFieldLength),
+//                                    new ObjectEncoder(),
+//                                    // app
+//                                    new ObjectEchoServerHandler());
+
+                            ChannelPipeline p = socketChannel.pipeline();
+                            p.addLast(new LengthFieldBasedFrameDecoder(Integer.MAX_VALUE, 0, 4, 0, 4));
+                            p.addLast(new LengthFieldPrepender(4));
+                            p.addLast(new ObjectDecoder(ClassResolvers.cacheDisabled(null)));
+                            p.addLast(new ObjectEncoder());
+                            p.addLast(commandHandler);
                         }
                     })
                     .option(ChannelOption.SO_BACKLOG, 128)

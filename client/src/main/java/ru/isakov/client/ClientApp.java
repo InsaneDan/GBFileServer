@@ -4,12 +4,12 @@ import javafx.application.Application;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
+import javafx.stage.Modality;
 import javafx.stage.Stage;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import ru.isakov.client.controller.AuthController;
 import ru.isakov.client.controller.ClientController;
-import ru.isakov.client.model.ClientState;
 import ru.isakov.client.model.Network;
 
 // to start in debug mode: mvn clean javafx:run@debug
@@ -18,7 +18,6 @@ public class ClientApp extends Application {
 
     private static final Logger logger = LoggerFactory.getLogger(ClientApp.class);
 
-    private ClientState clientState = ClientState.AUTHENTICATION;
     private Stage primaryStage;
     private Stage authDialogStage;
     private Network network;
@@ -43,6 +42,7 @@ public class ClientApp extends Application {
         primaryStage.setScene(scene);
 
         primaryStage.show();
+
     }
 
     public static void main(String[] args) {

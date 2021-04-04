@@ -1,5 +1,7 @@
 package ru.isakov;
 
+import ru.isakov.commands.AuthCommandData;
+
 import java.io.Serializable;
 import java.util.List;
 
@@ -16,14 +18,14 @@ public class Command implements Serializable {
 
     public void setData(Object data) { this.data = data; }
 
-    /*    public static Command authCommand(String login, String password) {
+        public static Command authCommand(String login, String password) {
         Command command = new Command();
         command.type = CommandType.AUTH;
         command.data = new AuthCommandData(login, password);
         return command;
     }
 
-
+/*
     public static Command authOkCommand(String username, String login) {
         Command command = new Command();
         command.type = CommandType.AUTH_OK;
