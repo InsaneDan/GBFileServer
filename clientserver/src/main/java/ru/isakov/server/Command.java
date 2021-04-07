@@ -1,9 +1,8 @@
-package ru.isakov;
+package ru.isakov.server;
 
-import ru.isakov.commands.AuthCommandData;
+import ru.isakov.server.commands.AuthCommandData;
 
 import java.io.Serializable;
-import java.util.List;
 
 public class Command implements Serializable {
 

@@ -6,8 +6,8 @@ import javafx.scene.control.Alert;
 import javafx.scene.control.ButtonType;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import ru.isakov.Command;
-import ru.isakov.CommandType;
+import ru.isakov.server.Command;
+import ru.isakov.server.CommandType;
 
 public class ClientCommandHandler extends ChannelInboundHandlerAdapter {
 
@@ -40,7 +40,7 @@ public class ClientCommandHandler extends ChannelInboundHandlerAdapter {
             if (command.getType().equals(CommandType.AUTH_OK)) {
                 logger.info("Auth OK");
                 network.getClientApp().setAuthState(true);
-                network.getClientApp().getAuthController().exitAction();
+                network.getClientApp().closeAuth();
             } else {
                 logger.warn("Auth denied");
                 Alert alert = new Alert(Alert.AlertType.ERROR, "Auth denied", ButtonType.OK);
@@ -50,11 +50,9 @@ public class ClientCommandHandler extends ChannelInboundHandlerAdapter {
             }
         } catch (ClassCastException classCastException) {
             logger.error(classCastException.toString());
-            return;
         }
 
 
-//        ctx.writeAndFlush(msg);
     }
 
     @Override

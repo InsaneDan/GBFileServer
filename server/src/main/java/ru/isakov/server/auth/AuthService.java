@@ -1,6 +1,6 @@
 package ru.isakov.server.auth;
 
-import ru.isakov.Command;
+import ru.isakov.server.Command;
 
 public interface AuthService {
 

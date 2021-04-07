@@ -3,9 +3,8 @@ package ru.isakov.server.auth;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.sqlite.JDBC;
-import ru.isakov.Command;
-import ru.isakov.CommandType;
-import ru.isakov.commands.AuthCommandData;
+import ru.isakov.server.Command;
+import ru.isakov.server.commands.AuthCommandData;
 
 import java.sql.*;
 import java.util.ArrayList;

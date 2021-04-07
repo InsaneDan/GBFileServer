@@ -4,10 +4,10 @@ import io.netty.channel.ChannelHandlerContext;
 import io.netty.channel.ChannelInboundHandlerAdapter;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import ru.isakov.Command;
-import ru.isakov.CommandType;
-import ru.isakov.commands.AuthCommandData;
+import ru.isakov.server.Command;
+import ru.isakov.server.CommandType;
 import ru.isakov.server.auth.BaseAuthService;
+import ru.isakov.server.commands.AuthCommandData;
 
 // обработка команд, предназначенных только для сервера
 public class ServerCommandHandler extends ChannelInboundHandlerAdapter {
@@ -55,7 +55,7 @@ public class ServerCommandHandler extends ChannelInboundHandlerAdapter {
 
     @Override
     public void channelReadComplete(ChannelHandlerContext ctx) {
-        ctx.flush();
+//        ctx.flush();
     }
 
     @Override

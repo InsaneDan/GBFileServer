@@ -3,6 +3,7 @@ package ru.isakov.client.model;
 import io.netty.bootstrap.Bootstrap;
 import io.netty.channel.ChannelFuture;
 import io.netty.channel.ChannelInitializer;
+import io.netty.channel.ChannelOption;
 import io.netty.channel.ChannelPipeline;
 import io.netty.channel.nio.NioEventLoopGroup;
 import io.netty.channel.socket.SocketChannel;
@@ -14,10 +15,8 @@ import io.netty.handler.codec.serialization.ObjectDecoder;
 import io.netty.handler.codec.serialization.ObjectEncoder;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import ru.isakov.Command;
-import ru.isakov.CommandHandler;
 import ru.isakov.client.ClientApp;
-import ru.isakov.client.controller.AuthController;
+import ru.isakov.server.Command;
 
 public class Network {
 
@@ -72,8 +71,23 @@ public class Network {
                                 p.addLast(clientCommandHandler);
                             }
                         });
+                System.out.println("HERE!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!");
+                b.option(ChannelOption.CONNECT_TIMEOUT_MILLIS, 10000);
                 ChannelFuture future = b.connect(host, port).sync();
-                connected = true; // флаг - успешно подключились
+                future.awaitUninterruptibly(); // таймаут подключения
+                // убедиться, что задача (future) завершена
+                assert future.isDone();
+
+                if (future.isCancelled()) {
+                    // Connection attempt cancelled by user
+                    System.out.println("Connection attempt cancelled by user");
+                } else if (!future.isSuccess()) {
+                    future.cause().printStackTrace();
+                } else {
+                    // Connection established successfully
+                    System.out.println("Connection established successfully");
+                }
+
                 future.channel().closeFuture().sync(); // ждем команду на остановку
             } catch (Exception e) {
                 connected = false; // флаг - соединение с сервером не установлено
@@ -100,8 +114,7 @@ public class Network {
     }
 
     public void close() {
-        // сообщение о завершении работы клиента
-        sendCommand(Command.exitCommand());
+
         // закрыть канал при завершении работы клиента
         if (channel != null && channel.isOpen()) {
             channel.close();

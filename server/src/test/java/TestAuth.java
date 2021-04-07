@@ -1,9 +1,8 @@
-package ru.isakov.server.auth;
+import ru.isakov.server.Command;
+import ru.isakov.server.CommandType;
+import ru.isakov.server.auth.BaseAuthService;
 
-import ru.isakov.Command;
-import ru.isakov.CommandType;
-
-public class TestConnection {
+public class TestAuth {
 
     // TODO: 06.04.2021 УДАЛИТЬ ПЕРЕД СДАЧЕЙ ПРОЕКТА, поленился писать юнит-тесты...
 

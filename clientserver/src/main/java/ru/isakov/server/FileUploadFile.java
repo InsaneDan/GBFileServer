@@ -1,4 +1,4 @@
-package ru.isakov;
+package ru.isakov.server;
 
 import  java.io.File ;
 import  java.io.Serializable ;

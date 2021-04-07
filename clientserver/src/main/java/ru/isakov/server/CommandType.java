@@ -1,4 +1,4 @@
-package ru.isakov;
+package ru.isakov.server;
 
 public enum CommandType {
     AUTH,

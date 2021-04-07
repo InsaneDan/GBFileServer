@@ -3,18 +3,13 @@ package ru.isakov.client.controller;
 import javafx.application.Platform;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
-import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
-import javafx.scene.Parent;
-import javafx.scene.Scene;
 import javafx.scene.control.*;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
-import javafx.stage.Modality;
-import javafx.stage.Stage;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import ru.isakov.Command;
+import ru.isakov.server.Command;
 import ru.isakov.client.model.Network;
 
 import java.io.IOException;
@@ -46,13 +41,14 @@ public class ClientController implements Initializable {
         serverPanelController.updateList(Paths.get("D:/testDirServer"));
         clientPanelController.updateList(Paths.get("D:/testDirClient"));
 
-        network = new Network();
-
     }
 
     public void exitAction() {
-        network.close();
-        Platform.exit();
+        try {
+            network.close();
+        } finally {
+            Platform.exit();
+        }
     }
 
     public void copyBtnAction(ActionEvent actionEvent) {
@@ -90,6 +86,11 @@ public class ClientController implements Initializable {
     }
 
 
+    public void setNetwork(Network network) {
+        this.network = network;
+    }
 
-
+    public Network getNetwork() {
+        return network;
+    }
 }

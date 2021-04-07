@@ -1,11 +1,9 @@
 package ru.isakov.client.controller;
 
-import javafx.application.Platform;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.scene.control.*;
-import ru.isakov.Command;
-import ru.isakov.client.ClientApp;
+import ru.isakov.server.Command;
 import ru.isakov.client.model.AlertPopup;
 import ru.isakov.client.model.Network;
 
@@ -21,7 +19,7 @@ public class AuthController {
     public void setNetwork(Network network) { this.network = network; }
 
     public void exitAction() {
-        Platform.exit();
+        // действие не требуется, просто закрыть окно
     }
 
     public void signIn(ActionEvent actionEvent) {

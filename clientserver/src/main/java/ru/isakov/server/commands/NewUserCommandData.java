@@ -1,4 +1,4 @@
-package ru.isakov.commands;
+package ru.isakov.server.commands;
 
 import java.io.Serializable;
 

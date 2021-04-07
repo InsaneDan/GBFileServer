@@ -5,7 +5,6 @@ import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.Alert;
-import javafx.stage.Modality;
 import javafx.stage.Stage;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -35,9 +34,8 @@ public class ClientApp extends Application {
 
     @Override
     public void start(Stage primaryStage) throws Exception{
-
         establishConnection();
-        authState = false;
+        authState = true;
         showAuth();
         if (authState) showClient();
 
@@ -77,6 +75,10 @@ public class ClientApp extends Application {
         }
     }
 
+    public void closeAuth() {
+        authStage.close();
+    }
+
     // основная форма
     private void showClient(){
         try {
@@ -84,10 +86,13 @@ public class ClientApp extends Application {
             FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("/MainForm.fxml"));
             Parent root = fxmlLoader.load();
             clientController = fxmlLoader.getController();
-            primaryStage.setOnCloseRequest(event -> clientController.exitAction());
             primaryStage.setTitle("File Cloud Server");
             Scene scene = new Scene(root, 920, 500);
             scene.getStylesheets().add("/style.css");
+
+            clientController.setNetwork(network);
+            primaryStage.setOnCloseRequest(event -> clientController.exitAction());
+
 //            primaryStage.setResizable(false);
             primaryStage.setScene(scene);
             primaryStage.show();

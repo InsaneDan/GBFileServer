@@ -12,8 +12,6 @@ import io.netty.handler.codec.serialization.ObjectDecoder;
 import io.netty.handler.codec.serialization.ObjectEncoder;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import ru.isakov.CommandHandler;
-import ru.isakov.CommandType;
 import ru.isakov.server.model.ServerCommandHandler;
 
 public class ServerApp {
