@@ -12,15 +12,12 @@ import io.netty.handler.codec.LengthFieldPrepender;
 import io.netty.handler.codec.serialization.ClassResolvers;
 import io.netty.handler.codec.serialization.ObjectDecoder;
 import io.netty.handler.codec.serialization.ObjectEncoder;
-import javafx.scene.control.Alert;
-import javafx.scene.control.ButtonType;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import ru.isakov.Command;
 import ru.isakov.CommandHandler;
-
-import java.util.ArrayList;
-import java.util.List;
+import ru.isakov.client.ClientApp;
+import ru.isakov.client.controller.AuthController;
 
 public class Network {
 
@@ -31,18 +28,26 @@ public class Network {
     private final String host;
     private final int port;
 
+    private Boolean connected = null; // состояние подключения к серверу
+    private ClientApp clientApp;
+
     private SocketChannel channel; // сокет-канал
     NioEventLoopGroup workerGroup; // пул потоков для обработки сетевых событий
 
-    private final CommandHandler commandHandler = new CommandHandler(1);
+    private final ClientCommandHandler clientCommandHandler = new ClientCommandHandler(this);
 
     // конструктор
     public Network() { this(HOST, PORT); }
 
+
     public Network(String host, int port) {
         this.host = host;
         this.port = port;
-        this.connect();
+    }
+
+    public Network(ClientApp clientApp) {
+        this();
+        this.clientApp = clientApp;
     }
 
     public void connect() {
@@ -64,28 +69,39 @@ public class Network {
                                 p.addLast(new LengthFieldPrepender(4));
                                 p.addLast(new ObjectDecoder(ClassResolvers.cacheDisabled(null)));
                                 p.addLast(new ObjectEncoder());
-                                p.addLast(commandHandler);
+                                p.addLast(clientCommandHandler);
                             }
                         });
                 ChannelFuture future = b.connect(host, port).sync();
+                connected = true; // флаг - успешно подключились
                 future.channel().closeFuture().sync(); // ждем команду на остановку
             } catch (Exception e) {
+                connected = false; // флаг - соединение с сервером не установлено
                 logger.error("Не удалось установить соединение с сервером!");
                 logger.error(e.getMessage());
-                Alert alert = new Alert(Alert.AlertType.ERROR, "Не удалось установить соединение с сервером!", ButtonType.OK);
-                alert.showAndWait();
             } finally {
                 workerGroup.shutdownGracefully();
             }
         });
-        t.setDaemon(true); // для автозавершения треда при закрытии формы (точнее - основного потока)
+        t.setDaemon(true); // для автозавершения треда при закрытии формы (основного потока)
         t.start();
+    }
 
+    // получить состояние подключения к серверу
+    public Boolean isConnected() {
+//        if (channel.isOpen() != connected) {
+//            System.out.println("ОШИБКА ПРИ ОПРЕДЕЛЕНИИ СОСТОЯНИЯ ПОДКЛЮЧЕНИЯ !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!");
+//        }
+        return connected;
+    }
+
+    public ClientApp getClientApp() {
+        return clientApp;
     }
 
     public void close() {
         // сообщение о завершении работы клиента
-//        sendCommand(Command.exitCommand());
+        sendCommand(Command.exitCommand());
         // закрыть канал при завершении работы клиента
         if (channel != null && channel.isOpen()) {
             channel.close();
@@ -93,8 +109,7 @@ public class Network {
     }
 
     public void sendCommand(Command command) {
-//        channel.writeAndFlush(command);
-        commandHandler.sendCommand(Command.exitCommand());
+        clientCommandHandler.sendCommand(command);
     }
 
 }

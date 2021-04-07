@@ -14,6 +14,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import ru.isakov.CommandHandler;
 import ru.isakov.CommandType;
+import ru.isakov.server.model.ServerCommandHandler;
 
 public class ServerApp {
 
@@ -27,8 +28,7 @@ public class ServerApp {
         int lengthFieldLength = (int) Math.ceil(CommandType.values().length % 8); // длина поля зависит от количества доступных команд в списке
         int bytesToStrip = lengthFieldLength;
 
-
-        CommandHandler commandHandler = new CommandHandler(0);
+        ServerCommandHandler serverCommandHandler = new ServerCommandHandler();
 
         int port = args.length > 0 ? Integer.parseInt(args[0]) : PORT;
         // создаем два пула потоков (менеджеры потоков): для обработки подключений (bossGroup) и обработки данных
@@ -60,7 +60,8 @@ public class ServerApp {
                             p.addLast(new LengthFieldPrepender(4));
                             p.addLast(new ObjectDecoder(ClassResolvers.cacheDisabled(null)));
                             p.addLast(new ObjectEncoder());
-                            p.addLast(commandHandler);
+                            p.addLast(serverCommandHandler);
+
                         }
                     })
                     .option(ChannelOption.SO_BACKLOG, 128)
@@ -76,7 +77,7 @@ public class ServerApp {
             // ожидаем, пока сервер не будет остановлен
             future.channel().closeFuture().sync();
 
-
+            logger.info("Сервер остановлен ?????????????????????????????????????????????????????????????????????????????????");
         } catch (Exception e) {
            logger.error(e.getMessage());
         } finally {

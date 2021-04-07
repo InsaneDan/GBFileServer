@@ -33,15 +33,9 @@ public class ClientController implements Initializable {
     @FXML VBox clientPanel, serverPanel;
     PanelController serverPanelController, clientPanelController;
 
-    @FXML AuthController authController;
-
     @FXML HBox createDirBox;
     @FXML TextField createDirPath;
     @FXML Button createDirConfirmButton;
-
-    public Network getNetwork() {
-        return network;
-    }
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
@@ -54,27 +48,6 @@ public class ClientController implements Initializable {
 
         network = new Network();
 
-        showAuth();
-    }
-
-    private void showAuth(){
-        try {
-            Stage authStage = new Stage();
-            FXMLLoader loader = new FXMLLoader(getClass().getResource("/AuthForm.fxml"));
-            Parent root = loader.load();
-            authController = loader.getController();
-            authController.setParentController(this);
-            authStage.setOnCloseRequest(event -> authController.exitAction());
-            authStage.setTitle("Authentication");
-            Scene scene = new Scene(root, 320, 200);
-            scene.getStylesheets().add("/style.css");
-            authStage.initModality(Modality.APPLICATION_MODAL);
-            authStage.setResizable(false);
-            authStage.setScene(scene);
-            authStage.showAndWait();
-        } catch (IOException e) {
-            logger.error(e.toString());
-        }
     }
 
     public void exitAction() {

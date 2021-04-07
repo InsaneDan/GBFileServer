@@ -2,6 +2,7 @@ package ru.isakov.commands;
 
 import java.io.Serializable;
 
+// команда для авторизации и регистрации (используются одинаковые поля - логин, пароль)
 public class AuthCommandData implements Serializable {
 
     private final String login;

@@ -6,6 +6,7 @@ public enum CommandType {
     AUTH_ERR,
     REG,
     REG_OK,
+    REG_ERR,
     FILE_LIST,
     FILE_UPLOAD,
     FILE_DOWNLOAD,

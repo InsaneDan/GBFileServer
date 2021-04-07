@@ -1,14 +1,16 @@
 package ru.isakov.server.auth;
 
+import ru.isakov.Command;
+
 public interface AuthService {
 
     void start();
 
     void stop();
 
-    String isLoginExist(String login);
+    Boolean isLoginExist(String login);
 
-    Boolean isAuthOK(String login, String password);
+    Command isAuthOK(String login, String password);
 
     Boolean addUser(String login, String password);
 

@@ -42,7 +42,6 @@
             <Insets />
         </opaqueInsets>
     </HBox>
-    <Separator style="-fx-background-color: dark grey;" VBox.vgrow="ALWAYS" />
 
     <HBox prefHeight="425.0" prefWidth="616.0" VBox.vgrow="ALWAYS">
         <fx:include fx:id="serverPanel" source="panel.fxml" HBox.hgrow="ALWAYS"/>

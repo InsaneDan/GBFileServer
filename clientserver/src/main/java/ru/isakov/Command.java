@@ -18,28 +18,43 @@ public class Command implements Serializable {
 
     public void setData(Object data) { this.data = data; }
 
-        public static Command authCommand(String login, String password) {
+    public static Command authCommand(String login, String password) {
         Command command = new Command();
         command.type = CommandType.AUTH;
         command.data = new AuthCommandData(login, password);
         return command;
     }
 
-/*
-    public static Command authOkCommand(String username, String login) {
-        Command command = new Command();
-        command.type = CommandType.AUTH_OK;
-        command.data = new AuthOkCommandData(username);
-        return command;
-    }
-
     public static Command regCommand(String login, String password, String nickname) {
         Command command = new Command();
         command.type = CommandType.REG;
-        command.data = new NewUserCommandData(login, password, nickname);
+        command.data = new AuthCommandData(login, password);
         return command;
     }
 
+    public static Command authOkCommand() {
+        Command command = new Command();
+        command.type = CommandType.AUTH_OK;
+        command.data = null;
+        return command;
+    }
+
+    public static Command authErrCommand(String errorMessage) {
+        Command command = new Command();
+        command.type = CommandType.AUTH_ERR;
+        command.data = errorMessage;
+        return command;
+    }
+
+    public static Command errorCommand(String errorMessage) {
+        Command command = new Command();
+        command.type = CommandType.ERROR;
+        command.data = errorMessage;
+        return command;
+    }
+
+
+/*
     public static Command changeNicknameCommand(String nickname) {
         Command command = new Command();
         command.type = CommandType.SET_NICKNAME;
@@ -50,12 +65,6 @@ public class Command implements Serializable {
         Command command = new Command();
         command.type = CommandType.SET_NICKNAME_OK;
         command.data = new NicknameOkCommandData(nickname);
-        return command;
-    }
-    public static Command errorCommand(String errorMessage) {
-        Command command = new Command();
-        command.type = CommandType.ERROR;
-        command.data = new ErrorCommandData(errorMessage);
         return command;
     }
 
