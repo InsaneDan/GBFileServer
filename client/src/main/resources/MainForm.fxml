@@ -1,0 +1,75 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.*?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+
+<VBox xmlns="http://javafx.com/javafx/11.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="ru.isakov.client.controller.ClientController">
+    <HBox>
+        <children>
+            <MenuBar>
+                <Menu text="Menu">
+                    <Menu text="Приостановить синхронизацию">
+                        <items>
+                            <MenuItem fx:id="stopSyncing15" text="на 15 минут" />
+                            <MenuItem fx:id="stopSyncing60" text="на 1 час" />
+                            <MenuItem fx:id="stopSyncing" text="до включения вручную" />
+                        </items>
+                    </Menu>
+                    <MenuItem text="Возобновить синхронизацию" />
+                    <MenuItem text="Лог синхронизации" />
+                    <SeparatorMenuItem />
+                    <Menu text="Создать">
+                        <items>
+                            <MenuItem text="Новая папка" />
+                            <MenuItem text="Новый файл (txt)" />
+                            <SeparatorMenuItem />
+                            <MenuItem text="Новая папка локально" />
+                        </items>
+                    </Menu>
+                    <SeparatorMenuItem />
+                    <MenuItem text="Открыть в браузере" />
+                    <SeparatorMenuItem />
+                    <MenuItem text="Sign out" />
+                    <MenuItem text="Exit" />
+                </Menu>
+                <Menu text="About">
+                    <MenuItem text="О программе" />
+                </Menu>
+            </MenuBar>
+        </children>
+        <opaqueInsets>
+            <Insets />
+        </opaqueInsets>
+    </HBox>
+
+    <HBox prefHeight="425.0" prefWidth="616.0" VBox.vgrow="ALWAYS">
+        <fx:include fx:id="serverPanel" source="panel.fxml" HBox.hgrow="ALWAYS"/>
+        <fx:include fx:id="clientPanel" source="panel.fxml" HBox.hgrow="ALWAYS"/>
+    </HBox>
+
+   <HBox fx:id="createDirBox" alignment="CENTER_LEFT" spacing="5.0" VBox.vgrow="ALWAYS">
+       <TextField fx:id="createDirPath" HBox.hgrow="ALWAYS">
+         <HBox.margin>
+            <Insets />
+         </HBox.margin></TextField>
+       <Button fx:id="createDirConfirmButton" mnemonicParsing="false" text="ОК">
+         <HBox.margin>
+            <Insets />
+         </HBox.margin></Button>
+      <padding>
+         <Insets bottom="5.0" left="5.0" right="5.0" top="5.0" />
+      </padding>
+   </HBox>
+
+    <HBox spacing="5">
+        <Button focusTraversable="false" onAction="#sendObject" prefWidth="85" text="ТЕСТ" HBox.hgrow="ALWAYS" />
+        <Region prefWidth="20" />
+        <Button focusTraversable="false" onAction="#copyBtnAction" prefWidth="85" text="Копировать" HBox.hgrow="ALWAYS" />
+        <Button focusTraversable="false" prefWidth="85" text="Перенести" HBox.hgrow="ALWAYS" />
+        <Button focusTraversable="false" prefWidth="85" text="Удалить" HBox.hgrow="ALWAYS" />
+        <VBox.margin>
+            <Insets bottom="5.0" left="5.0" right="5.0" top="5.0" />
+        </VBox.margin>
+    </HBox>
+</VBox>
