@@ -17,6 +17,7 @@ package ru.isakov.server.server;
 
 import io.netty.channel.*;
 import io.netty.channel.ChannelHandler.Sharable;
+import ru.isakov.server.Command;
 
 import java.net.InetAddress;
 import java.util.Date;
@@ -29,14 +30,23 @@ public class ServerHandler extends ChannelInboundHandlerAdapter {
 
     @Override
     public void channelActive(ChannelHandlerContext ctx) throws Exception {
+        System.out.println("SERVER channelActive");
+
         // Send greeting for a new connection.
-        ctx.write("Welcome to " + InetAddress.getLocalHost().getHostName() + "!\r\n");
-        ctx.write("It is " + new Date() + " now.\r\n");
+        ctx.write("Welcome to " + InetAddress.getLocalHost().getHostName() + "!");
+        ctx.write("It is " + new Date() + " now.");
         ctx.flush();
     }
 
     @Override
     public void channelRead(ChannelHandlerContext ctx, Object msg) throws Exception {
+        System.out.println("SERVER channelRead object: " + msg.toString());
+
+        if (msg instanceof Command) {
+            System.out.println("SERVER got command: " + ((Command) msg).getType() + " > " + ((Command) msg).getData());
+        } else {
+            System.out.println("WRONG COMMAND");
+        }
 
         // Generate and write a response.
         String response;
@@ -52,6 +62,7 @@ public class ServerHandler extends ChannelInboundHandlerAdapter {
 
         // We do not need to write a ChannelBuffer here.
         // We know the encoder inserted at TelnetPipelineFactory will do the conversion.
+        System.out.println("SERVER *** WRITE *** object: " + response);
         ChannelFuture future = ctx.write(response);
 
         // Close the connection after sending 'Have a good day!'
@@ -63,6 +74,7 @@ public class ServerHandler extends ChannelInboundHandlerAdapter {
 
     @Override
     public void channelReadComplete(ChannelHandlerContext ctx) {
+        System.out.println("SERVER channelReadComplete");
         ctx.flush();
     }
 

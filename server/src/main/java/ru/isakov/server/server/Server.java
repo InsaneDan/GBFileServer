@@ -38,7 +38,6 @@ public final class Server {
                     .channel(NioServerSocketChannel.class)
                     .handler(new LoggingHandler(LogLevel.INFO))
                     .childHandler(new ServerInitializer(sslCtx));
-
             ChannelFuture future = b.bind(PORT).sync();
             future.channel().closeFuture().sync();
         } finally {

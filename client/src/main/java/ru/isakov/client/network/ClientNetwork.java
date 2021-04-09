@@ -26,6 +26,7 @@ import io.netty.handler.logging.LoggingHandler;
 import io.netty.handler.ssl.SslContext;
 import io.netty.handler.ssl.SslContextBuilder;
 import io.netty.handler.ssl.util.InsecureTrustManagerFactory;
+import ru.isakov.server.CommandType;
 
 import java.io.BufferedReader;
 import java.io.InputStreamReader;
@@ -39,8 +40,11 @@ public final class ClientNetwork {
     static final String HOST = System.getProperty("host", "127.0.0.1");
     static final int PORT = Integer.parseInt(System.getProperty("port", SSL ? "8992" : "8023"));
 
-    public static void main(String[] args) throws Exception {
-        // Configure SSL.
+    private ChannelFuture lastWriteFuture;
+    private Channel channel;
+
+    public void connect() throws Exception {
+        // Configure SSL
         final SslContext sslCtx;
         if (SSL) {
             sslCtx = SslContextBuilder.forClient()
@@ -57,26 +61,28 @@ public final class ClientNetwork {
              .handler(new LoggingHandler(LogLevel.INFO))
              .handler(new ClientInitializer(sslCtx));
 
-            // Start the connection attempt.
-            Channel ch = b.connect(HOST, PORT).sync().channel();
+            channel = b.connect(HOST, PORT).sync().channel();
 
-            // Read commands from the stdin.
+            // Read commands from the stdin
             ChannelFuture lastWriteFuture = null;
             BufferedReader in = new BufferedReader(new InputStreamReader(System.in));
             for (;;) {
+                System.out.print("Enter command: ");
                 String line = in.readLine();
                 if (line == null) {
                     break;
+                } else if (line.equals("/?")) {
+                    printCommands();
+                    continue;
                 }
 
                 // Sends the received line to the server.
-//                lastWriteFuture = ch.writeAndFlush(line + "\r\n");
-                lastWriteFuture = ch.writeAndFlush(line);
+                lastWriteFuture = channel.writeAndFlush(line);
 
                 // If user typed the 'bye' command, wait until the server closes
                 // the connection.
                 if ("bye".equals(line.toLowerCase())) {
-                    ch.closeFuture().sync();
+                    channel.closeFuture().sync();
                     break;
                 }
             }
@@ -86,8 +92,16 @@ public final class ClientNetwork {
                 lastWriteFuture.sync();
             }
         } finally {
-            System.out.println("CLIENT shutdownGracefully");
+            // отключаем клиента
             group.shutdownGracefully();
+        }
+    }
+
+
+    // вывод списка команд в терминал
+    private void printCommands() {
+        for (int i = 0; i < CommandType.values().length; i++) {
+            System.out.println(CommandType.values()[i].ordinal() + ". " + CommandType.values()[i].name());
         }
     }
 }
